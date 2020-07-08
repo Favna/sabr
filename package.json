@@ -2,11 +2,11 @@
   "name": "sabr",
   "version": "0.1.7",
   "description": "Klasa Discord API Library Framework",
-  "main": "dist/index",
-  "typings": "dist/index",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -p .",
-    "prepack": "tsc --declaration",
+    "prepack": "npm run build",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish"
   },
@@ -32,6 +32,7 @@
     "typescript": "^3.9.5"
   },
   "files": [
-    "dist/*"
+    "dist/",
+    "!dist/tsconfig.tsbuildinfo"
   ]
 }
