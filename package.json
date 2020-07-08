@@ -1,6 +1,6 @@
 {
   "name": "sabr",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Klasa Discord API Library Framework",
   "main": "index.js",
   "scripts": {
