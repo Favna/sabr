@@ -1,13 +1,4 @@
-import {
-  Client,
-  ClientOptions,
-  Message,
-  MessageData,
-  SplitOptions,
-  isTextBasedChannel,
-  GuildChannel,
-  DMChannel,
-} from "@klasa/core";
+import { Client, ClientOptions, Message, MessageData, SplitOptions, isTextBasedChannel } from "@klasa/core";
 import { Command, CommandOptions, constructCommand } from "./Command";
 import { isGuildTextBasedChannel, PermissionsFlags } from "@klasa/core";
 
@@ -195,13 +186,18 @@ class BotClient extends Client {
     const channel = this.channels.get(channelID);
     if (!channel || !isTextBasedChannel(channel)) return [];
 
-    if (!isGuildTextBasedChannel(channel)) return channel.send({ data }, options)
+    if (!isGuildTextBasedChannel(channel)) return channel.send({ data }, options);
 
     const member = channel.guild.members.get(this.user!.id);
     if (!member) return;
 
-    const perms = channel.permissionsFor(member)
-    if (![PermissionsFlags.ViewChannel, PermissionsFlags.SendMessages, PermissionsFlags.EmbedLinks].every(permission => perms.has(permission))) return;
+    const perms = channel.permissionsFor(member);
+    if (
+      ![PermissionsFlags.ViewChannel, PermissionsFlags.SendMessages, PermissionsFlags.EmbedLinks].every((permission) =>
+        perms.has(permission)
+      )
+    )
+      return;
 
     return channel.send({ data }, options);
   }
