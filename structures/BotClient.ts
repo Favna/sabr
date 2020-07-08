@@ -41,6 +41,7 @@ class BotClient extends Client {
     return message.channel.send({ data: { content: `The prefix in this guild is set to: **${this.prefix}**` } });
   }
 
+  /** This function can be overriden and set a custom command handler. Customizing this should only be done by ADVANCED DEVELOPERS! */
   async commandHandler(message: Message) {
     // Commands should never be allowed by bots. That's how you get rate limited/banned.
     if (message.author.bot) return;
@@ -80,6 +81,7 @@ class BotClient extends Client {
     return subcommand.execute(message, args);
   }
 
+  /** Handles all the checking of command options to see if a command is allowed to execute. You can override this if you wish if you know what you are doing. */
   commandAllowed(message: Message, command: Command) {
     // If the command was triggered in DM it needs separate handling.
     if (!isGuildTextBasedChannel(message.channel)) {
@@ -134,6 +136,7 @@ class BotClient extends Client {
     return command.permissionLevel(message);
   }
 
+  /** The command handler when the message is in a DM. This function can be overriden to do custom command handling for dms. */
   handleDM(message: Message) {
     if (!message.content.startsWith(this.prefix)) return;
 
@@ -156,6 +159,7 @@ class BotClient extends Client {
     return command.execute(message, parameters);
   }
 
+  /** This function can be overriden to handle when a command has a mission permission. */
   missingCommandPermission(
     message: Message,
     command: Command,
@@ -179,37 +183,30 @@ class BotClient extends Client {
     );
   }
 
+  /** Will be used to translate strings with i18next */
   translate(key: string, args?: any) {
     // TODO: handle i18next translation crap
     console.log(key, args);
     return "";
   }
 
+  /** Sends a message to a channel by first checking if this channel has permissions for the bot to send a message. */
   sendMessage(channelID: string, data: MessageData, options?: SplitOptions) {
     const channel = this.channels.get(channelID);
     if (!channel || !isTextBasedChannel(channel)) return [];
 
-    const hasPermissions = this.checkPermissions(channel, this.user!.id, [
-      PermissionsFlags.ViewChannel,
-      PermissionsFlags.SendMessages,
-      PermissionsFlags.EmbedLinks,
-    ]);
-    if (!hasPermissions) return;
+    if (!isGuildTextBasedChannel(channel)) return channel.send({ data }, options)
+
+    const member = channel.guild.members.get(this.user!.id);
+    if (!member) return;
+
+    const perms = channel.permissionsFor(member)
+    if (![PermissionsFlags.ViewChannel, PermissionsFlags.SendMessages, PermissionsFlags.EmbedLinks].every(permission => perms.has(permission))) return;
 
     return channel.send({ data }, options);
   }
 
-  checkPermissions(channel: GuildChannel | DMChannel, userID: string, permissions: PermissionsFlags[]) {
-    // TODO: find a better way for dm perms
-    if (channel instanceof DMChannel) return true;
-
-    const member = channel.guild.members.get(userID);
-    if (!member) return;
-
-    const perms = channel.permissionsFor(member);
-    return permissions.every((permission) => perms.has(permission));
-  }
-
+  /** This function is for parsing arguments. If a required arg is missing it will return false. Customizing this should be only for ADVANCED DEVS! */
   parseArguments(message: Message, command: Command, parameters: string[]) {
     const args: { [key: string]: unknown } = {};
     let missingRequiredArg = false;
@@ -315,6 +312,7 @@ class BotClient extends Client {
     return missingRequiredArg ? false : args;
   }
 
+  /** Use this function to create a command. */
   createCommand(name: string, options: CommandOptions) {
     // Check if this command has already been created
     if (this.commands.has(name.toLowerCase())) throw new Error(`Command with the name ${name} already exists.`);
@@ -323,6 +321,7 @@ class BotClient extends Client {
     this.commands.set(name.toLowerCase(), constructCommand(name, options));
   }
 
+  /** Use this function to create a subcommand. */
   createSubcommand(commandName: string, subcommandName: string, options: CommandOptions) {
     // Check if the main command has been created.
     const command = this.commands.get(commandName.toLowerCase());
