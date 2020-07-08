@@ -25,6 +25,7 @@
   "bugs": {
     "url": "https://github.com/Skillz4Killz/sabr/issues"
   },
+  "types": "index.d.ts",
   "homepage": "https://github.com/Skillz4Killz/sabr#readme",
   "dependencies": {
     "@klasa/core": "dirigeants/core#build",
