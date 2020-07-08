@@ -2,7 +2,8 @@
   "name": "sabr",
   "version": "0.1.6",
   "description": "Klasa Discord API Library Framework",
-  "main": "index.js",
+  "main": "dist/index",
+  "typings": "dist/index",
   "scripts": {
     "build": "tsc -p .",
     "prepack": "tsc --declaration",
@@ -25,7 +26,6 @@
   "bugs": {
     "url": "https://github.com/Skillz4Killz/sabr/issues"
   },
-  "types": "index.d.ts",
   "homepage": "https://github.com/Skillz4Killz/sabr#readme",
   "dependencies": {
     "@klasa/core": "dirigeants/core#build",
