@@ -2,7 +2,7 @@ import { Client, ClientOptions, Message, MessageData, SplitOptions, isTextBasedC
 import { Command, CommandOptions, constructCommand } from "./Command";
 import { isGuildTextBasedChannel, PermissionsFlags } from "@klasa/core";
 
-class BotClient extends Client {
+export default class BotClient extends Client {
   /** The default prefix for the bot. Set this by using Client.setDefaultPrefix('!'). */
   prefix = "bot ";
   /** The commands will be stored here for quick and easy access. */
@@ -330,5 +330,3 @@ class BotClient extends Client {
     command.subcommands.set(subcommandName.toLowerCase(), constructCommand(subcommandName, options));
   }
 }
-
-export default BotClient;
